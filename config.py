@@ -1,3 +1,3 @@
 # config.py
-TWITTER_BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAABcQ0wEAAAAA874xeehNGf7whXWZ%2FwIeb3SAd8Y%3DeQLXqoIYpLznMIwAMagOhSJDXRPBgGG6dmIq9t0vmUfhsr4Dgo"
+TWITTER_BEARER_TOKEN = "enter your brearer token "
 MONGO_URI = "mongodb://localhost:27017/"
