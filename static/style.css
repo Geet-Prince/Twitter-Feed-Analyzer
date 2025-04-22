@@ -1,0 +1,336 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- CSS Variables --- */
+:root {
+    /* ... (keep all previous variables) ... */
+    --font-family: 'Poppins', 'Segoe UI', sans-serif;
+    --background-dark: #15181c;
+    --background-elements: #1e2227;
+    --background-elements-hover: #252a30;
+    --text-primary: #e1e8ed;
+    --text-secondary: #8899a6;
+    --twitter-blue: #1DA1F2;
+    --twitter-blue-darker: #0c85d0;
+    --accent-border: #38444d;
+    --positive-green: #17bf63;
+    --negative-red: #e0245e;
+    --neutral-gray: #8899a6;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --border-radius-sm: 6px;
+    --border-radius-md: 12px;
+    --transition-speed: 0.3s;
+    --transition-speed-fast: 0.2s;
+    --animation-duration: 0.5s;
+    --loading-overlay-bg: rgba(21, 24, 28, 0.85); /* Semi-transparent overlay background */
+}
+
+/* --- General Reset & Body --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 50px 20px;
+    overflow-x: hidden;
+}
+
+/* --- Container --- */
+.container {
+    width: 95%;
+    max-width: 800px;
+    background-color: var(--background-elements);
+    padding: 35px 45px;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    border: 1px solid var(--accent-border);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInContainer var(--animation-duration) ease-out forwards;
+    animation-delay: 0.2s;
+    /* ** Transition for fade-out during loading ** */
+    transition: opacity var(--transition-speed) ease, filter var(--transition-speed) ease;
+}
+
+/* --- Style for container when loading is active --- */
+.container.loading-active {
+    opacity: 0.6;
+    filter: blur(2px); /* Optional blur effect */
+    pointer-events: none; /* Prevent interaction with background */
+}
+
+
+/* --- Header --- */
+.app-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--accent-border);
+    padding-bottom: 30px;
+}
+
+h1 {
+    color: var(--twitter-blue);
+    font-weight: 600;
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(-15px);
+    animation: slideDownFadeIn var(--animation-duration) ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+#twitter-icon {
+    font-size: 1.3em;
+    display: inline-block;
+    animation: flapWings 0.7s ease-in-out infinite alternate;
+    transform-origin: center 60%;
+    /* ** Transition for hiding ** */
+    transition: visibility 0s linear 0.1s; /* Hide quickly when visibility changes */
+}
+
+.description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: slideUpFadeIn var(--animation-duration) ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+/* --- Main Content & Form --- */
+main { padding-top: 10px; }
+form {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeInForm var(--animation-duration) ease-out forwards;
+    animation-delay: 0.8s;
+}
+.input-wrapper { position: relative; flex-grow: 1; min-width: 300px; }
+.input-wrapper .fa-at {
+    position: absolute; left: 18px; top: 50%;
+    transform: translateY(-50%); color: var(--text-secondary);
+    font-size: 1.1em; pointer-events: none;
+    transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+input[type="text"] {
+    padding: 15px 20px 15px 50px; width: 100%;
+    border: 1px solid var(--accent-border); border-radius: var(--border-radius-sm);
+    background-color: var(--background-dark); color: var(--text-primary);
+    font-size: 1rem; font-family: var(--font-family);
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+input[type="text"]:focus {
+    outline: none; border-color: var(--twitter-blue);
+    box-shadow: 0 0 0 4px rgba(29, 161, 242, 0.2);
+}
+.input-wrapper:focus-within .fa-at {
+    color: var(--twitter-blue); transform: translateY(-50%) scale(1.1);
+}
+input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+
+button[type="submit"] {
+    padding: 0 25px; height: 52px; background: var(--twitter-blue);
+    border: none; color: white; border-radius: var(--border-radius-sm);
+    cursor: pointer; font-size: 1rem; font-weight: 600;
+    font-family: var(--font-family);
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed-fast) ease, box-shadow var(--transition-speed) ease;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 10px; position: relative; overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+button[type="submit"]:hover:not(:disabled) {
+    background-color: var(--twitter-blue-darker);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 4px 10px rgba(29, 161, 242, 0.3);
+}
+button[type="submit"]:active:not(:disabled) {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition-duration: 0.1s;
+}
+button[type="submit"]:disabled {
+    cursor: not-allowed; opacity: 0.7;
+    background-color: var(--text-secondary);
+    box-shadow: none;
+}
+
+/* REMOVED Loader Styles as it's not in the button anymore */
+
+/* --- Results Area --- */
+#results-area { margin-top: 30px; }
+h2 {
+    font-size: 1.5rem; font-weight: 500; color: var(--text-primary);
+    margin-bottom: 25px; padding-bottom: 15px;
+    border-bottom: 1px solid var(--accent-border); display: flex;
+    align-items: center; gap: 10px; opacity: 0;
+    transform: translateX(-20px);
+    animation: slideInLeft var(--animation-duration) ease-out forwards;
+}
+.message {
+    padding: 18px 25px; margin: 20px 0; border-radius: var(--border-radius-sm);
+    display: flex; align-items: center; gap: 15px;
+    font-size: 1rem; border: 1px solid; opacity: 0;
+    max-height: 0; overflow: hidden;
+    animation: slideDownFadeInMessage var(--animation-duration) ease-out forwards;
+    transform: translateY(-10px);
+}
+.message i { font-size: 1.3em; flex-shrink: 0; }
+.message.error {
+    background-color: rgba(224, 36, 94, 0.1); color: var(--negative-red);
+    border-color: rgba(224, 36, 94, 0.3);
+}
+.message.info {
+    background-color: rgba(136, 153, 166, 0.1); color: var(--text-secondary);
+    border-color: rgba(136, 153, 166, 0.3);
+}
+
+/* --- Tweet Box --- */
+.tweets-container { display: flex; flex-direction: column; gap: 20px; }
+.tweet-box {
+    background: var(--background-dark); border: 1px solid var(--accent-border);
+    padding: 20px 25px; border-radius: var(--border-radius-md);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: transform var(--transition-speed-fast) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    opacity: 0; transform: perspective(500px) rotateX(-15deg) translateY(10px);
+    animation: revealTweet 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation-delay: calc(var(--tweet-index, 0) * 0.12s);
+}
+.tweet-box:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: var(--twitter-blue);
+}
+.tweet-text { margin-bottom: 18px; line-height: 1.7; font-size: 1rem; color: var(--text-primary); word-wrap: break-word; }
+.tweet-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-top: 1px solid var(--accent-border); padding-top: 15px; margin-top: 15px; }
+.tweet-date { color: var(--text-secondary); font-size: 0.85em; display: flex; align-items: center; gap: 6px; }
+
+/* --- Sentiment Styles --- */
+.sentiment { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.9em; }
+.sentiment-label {
+    font-weight: 600; padding: 4px 10px; border-radius: 15px;
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.85em;
+    transform: scale(0.9); opacity: 0;
+    animation: popIn 0.4s ease-out forwards; animation-delay: 0.2s;
+}
+.sentiment-label i { font-size: 1.1em; }
+.sentiment-positive { color: var(--positive-green); background-color: rgba(23, 191, 99, 0.1); }
+.sentiment-negative { color: var(--negative-red); background-color: rgba(224, 36, 94, 0.1); }
+.sentiment-neutral { color: var(--neutral-gray); background-color: rgba(136, 153, 166, 0.1); }
+.sentiment-score { font-size: 0.85em; color: var(--text-secondary); margin-left: 5px; }
+
+/* --- Footer --- */
+footer {
+    text-align: center; margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid var(--accent-border); color: var(--text-secondary);
+    font-size: 0.85em; opacity: 0;
+    animation: fadeInFooter 0.6s ease-out forwards; animation-delay: 1s;
+}
+
+/* --- Loading Overlay Styles --- */
+#loading-overlay {
+    position: fixed; /* Cover viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--loading-overlay-bg);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+}
+
+#loading-overlay.active {
+    opacity: 1; /* Fade in when active */
+}
+
+.spinner-container {
+    position: relative;
+    width: 150px; /* Adjust size of the circular path area */
+    height: 150px;
+    /* border: 1px dashed red; /* For debugging */
+}
+
+#flying-bird {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 0; /* Start animation from the 'left' side of the container */
+    font-size: 3rem; /* Make the flying bird larger */
+    color: var(--twitter-blue);
+    transform-origin: center center;
+    /* Apply animation only when overlay is active */
+    animation: flyInCircle 2s linear infinite;
+    /* Set initial position via transform */
+    transform: translateY(-50%); /* Adjust vertical centering */
+}
+
+
+/* --- Animation Keyframes --- */
+
+@keyframes flapWings { /* Original header icon flapping */
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-15deg) translateY(-2px); }
+  75% { transform: rotate(10deg) translateY(1px); }
+}
+
+/* ** New Keyframe for Circular Flying ** */
+@keyframes flyInCircle {
+  0% {
+    /* Starts at 3 o'clock position */
+    transform: translate(calc(50% - 1.5rem), -50%) rotate(0deg) translateX(60px) rotate(0deg);
+    /* Explanation:
+       translate(calc(50% - 1.5rem), -50%): Moves the icon's center point to the center of the spinner container
+       rotate(0deg): Initial angle on the circle path
+       translateX(60px): Radius of the circular path
+       rotate(0deg): Initial orientation of the bird itself
+    */
+  }
+  100% {
+    /* Ends at 3 o'clock position after one full circle */
+     transform: translate(calc(50% - 1.5rem), -50%) rotate(360deg) translateX(60px) rotate(-360deg);
+    /* Explanation:
+       rotate(360deg): Final angle on the circle path
+       translateX(60px): Radius (same)
+       rotate(-360deg): Counter-rotates the bird so it stays facing forward along the path
+    */
+  }
+}
+
+
+/* (Keep other existing keyframes: fadeInContainer, slideDownFadeIn, etc.) */
+@keyframes fadeInContainer { to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDownFadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUpFadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInForm { to { opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } } /* Keep if needed elsewhere, maybe not now */
+@keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
+@keyframes slideDownFadeInMessage {
+    from { opacity: 0; max-height: 0; transform: translateY(-10px); margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0;}
+    to { opacity: 1; max-height: 100px; transform: translateY(0); margin: 20px 0; padding: 18px 25px; border-width: 1px; }
+}
+@keyframes revealTweet { to { opacity: 1; transform: perspective(500px) rotateX(0deg) translateY(0); } }
+@keyframes popIn { to { transform: scale(1); opacity: 1; } }
+@keyframes fadeInFooter { to { opacity: 1; } }
+
+
+/* --- Responsive Adjustments --- */
+/* (Keep existing media queries) */
+@media (max-width: 768px) { /* ... */ }
+@media (max-width: 480px) { /* ... */ }
