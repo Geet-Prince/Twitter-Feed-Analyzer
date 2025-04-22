@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Sentiment Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- === Loading Overlay (Hidden by Default) === -->
+    <div id="loading-overlay">
+        <div class="spinner-container">
+             <i class="fa-brands fa-twitter" id="flying-bird"></i>
+        </div>
+    </div>
+    <!-- === End Loading Overlay === -->
+
+
+    <div class="container" id="main-container">  <!-- Added ID to container -->
+        <header class="app-header">
+            <h1>
+                <i class="fa-brands fa-twitter" id="twitter-icon"></i> <!-- Keep original icon -->
+                Twitter Sentiment Analyzer
+            </h1>
+            <p class="description">
+                Enter a Twitter username below to fetch their latest tweets and analyze the sentiment expressed in each one.
+            </p>
+        </header>
+
+        <main>
+            <form method="POST" id="analyze-form">
+                <div class="input-wrapper">
+                     <i class="fa-solid fa-at"></i>
+                     <input type="text" name="username" placeholder="Enter Twitter Username (e.g., elonmusk)" required value="{{ username if username else '' }}">
+                </div>
+                <!-- REMOVED internal loader from button -->
+                <button type="submit" id="analyze-button">
+                    <span class="button-text">Analyze</span>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <div id="results-area">
+                {% if error %}
+                    <div class="message error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>{{ error }}</span>
+                    </div>
+                {% endif %}
+
+                {% if tweets is defined and not error %}
+                    {% if tweets %}
+                        <h2><i class="fa-solid fa-chart-simple"></i> Results for @{{ username }}</h2>
+                        <div class="tweets-container">
+                             {% for tweet in tweets %}
+                                <!-- Added style attribute for stagger animation -->
+                                <div class="tweet-box" style="--tweet-index: {{ loop.index0 }};">
+                                    <p class="tweet-text">{{ tweet.text }}</p>
+                                    <div class="tweet-meta">
+                                        <small class="tweet-date">
+                                            <i class="fa-regular fa-clock"></i> {{ tweet.created_at }}
+                                        </small>
+                                        <div class="sentiment">
+                                            {% if tweet.sentiment['compound'] >= 0.05 %}
+                                                <span class="sentiment-label sentiment-positive"><i class="fa-regular fa-face-smile-beam"></i> Positive</span>
+                                            {% elif tweet.sentiment['compound'] <= -0.05 %}
+                                                <span class="sentiment-label sentiment-negative"><i class="fa-regular fa-face-angry"></i> Negative</span>
+                                            {% else %}
+                                                <span class="sentiment-label sentiment-neutral"><i class="fa-regular fa-face-meh"></i> Neutral</span>
+                                            {% endif %}
+                                            <span class="sentiment-score">(Score: {{ "%.2f"|format(tweet.sentiment['compound']) }})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% elif request.method == 'POST' %}
+                         <div class="message info">
+                            <i class="fa-solid fa-info-circle"></i>
+                            <span>No public tweets found for @{{ username }} or the user doesn't exist.</span>
+                         </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Tweepy & VADER Sentiment</p>
+        </footer>
+    </div>
+
+    <!-- === JavaScript === -->
+    <script>
+        const form = document.getElementById('analyze-form');
+        const button = document.getElementById('analyze-button');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const mainContainer = document.getElementById('main-container'); // Get main container
+        const headerIcon = document.getElementById('twitter-icon'); // Get original header icon
+
+        if (form && loadingOverlay && mainContainer) {
+            form.addEventListener('submit', () => {
+                // 1. Show the overlay
+                loadingOverlay.style.display = 'flex'; // Make it visible
+                loadingOverlay.classList.add('active'); // Add class to trigger fade-in
+
+                // 2. Optionally fade out main content and hide header icon
+                mainContainer.classList.add('loading-active');
+                if(headerIcon) {
+                    headerIcon.style.visibility = 'hidden'; // Hide original icon
+                }
+
+                // 3. Disable button (to prevent multiple submits)
+                if (button) {
+                    button.disabled = true;
+                    // We don't need the button's internal loading class anymore
+                }
+
+                // Allow the form submission to proceed naturally
+            });
+        }
+
+        // Re-enable button and hide overlay if page is shown from bfcache (back button)
+        window.addEventListener('pageshow', (event) => {
+          if (event.persisted) {
+             if (button) {
+                button.disabled = false;
+             }
+             if (loadingOverlay) {
+                 loadingOverlay.style.display = 'none';
+                 loadingOverlay.classList.remove('active');
+             }
+             if(mainContainer) {
+                mainContainer.classList.remove('loading-active');
+             }
+             if(headerIcon) {
+                 headerIcon.style.visibility = 'visible'; // Show original icon again
+             }
+          }
+        });
+    </script>
+
+</body>
+</html>
